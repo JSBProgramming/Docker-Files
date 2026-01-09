@@ -1,0 +1,26 @@
+version: '3.8'
+
+services:
+  # MQTT Broker (Mosquitto)
+  mqtt-broker:
+    image: eclipse-mosquitto:latest
+    container_name: mqtt-broker
+    ports:
+      - "1883:1883"     # Default MQTT port
+    volumes:
+      - ./mosquitto/config/mosquitto.conf:/mosquitto/config/mosquitto.conf
+      - ./mosquitto/data:/mosquitto/data
+      - ./mosquitto/log:/mosquitto/log
+    restart: always
+
+  # Node-RED
+  node-red:
+    image: nodered/node-red:latest
+    container_name: node-red
+    depends_on:
+      - mqtt-broker
+    ports:
+      - "1880:1880"     # Web UI port
+    volumes:
+      - ./node-red-data:/data
+    restart: always
